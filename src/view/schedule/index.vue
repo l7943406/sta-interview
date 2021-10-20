@@ -1,19 +1,19 @@
 <template>
   <div class="schedule">
     <el-row class="schedule_row">
-      <el-col :xs="{span:23,offset:0}"
+      <el-col :xs="{span:24,offset:0}"
               :sm="{span:20,offset:2}"
               :md="{span:16,offset:4}"
               :lg="{span:12,offset:6}"
               :xl="{span:8,offset:8}">
         <el-card class="box-card">
           <div slot="header" class="box-card-header">
-            <div class="schedule_steps">
+            <div class="schedule_steps" style="width: 90%;margin: 0 auto">
               <el-steps  :active="active" finish-status="success">
                 <el-step title="报名"></el-step>
-                <el-step title="一面"></el-step>
-                <el-step title="二面"></el-step>
-                <el-step title="结果" :status="interviewResult"></el-step>
+                <el-step title="一面" :status="interviewResult1"></el-step>
+                <el-step title="二面" :status="interviewResult2"></el-step>
+                <el-step title="结果"></el-step>
               </el-steps>
             </div>
           </div>
@@ -34,10 +34,10 @@
                            label-position='right'
                            label-width="auto">
 
-                    <el-form-item label="方向" prop="choose">
-                      <el-select v-model="registerForm.data.choose" class="choose-select">
-                        <el-option value="STU" label="软件科技协会"></el-option>
-                        <el-option value="ACM" label="ACM算法队"></el-option>
+                    <el-form-item label="方向" prop="direction">
+                      <el-select v-model="registerForm.data.direction" class="direction-select">
+                        <el-option value="0" label="软件科技协会"></el-option>
+                        <el-option value="1" label="ACM算法队"></el-option>
                       </el-select>
                     </el-form-item>
                     <el-form-item label="学号" prop="stuId" disabled>
@@ -50,8 +50,8 @@
 
                       </el-input>
                     </el-form-item>
-                    <el-form-item label="班级" prop="clazz">
-                      <el-input v-model="registerForm.data.clazz" placeholder="请输入班级">
+                    <el-form-item label="班级" prop="stuClass">
+                      <el-input v-model="registerForm.data.stuClass" placeholder="请输入班级">
 
                       </el-input>
                     </el-form-item>
@@ -65,85 +65,114 @@
 
                     <el-button class="register-submit"
                                type="primary"
-                               @click="registerSubmit()">
+                               @click="verifyCallback = registerSubmit">
                       报名
                     </el-button>
                   </el-form>
               </div>
 
-              <!-- 一面预约 -->
+              <!-- 一面 -->
               <div v-if="active === 1">
-                  <el-form ref='registerForm'
-                           :model='registerForm.data'
-                           :rules='registerForm.rule'
+                <div v-if="interviewResult1 === ''">
+                  <el-form ref='reserveForm1'
+                           :model='reserveForm1.data'
+                           :rules='reserveForm1.rule'
                            label-position='right'
                            label-width="auto">
                     <el-form-item label="学号" prop="stuId">
-                      <el-input v-model="registerForm.data.stuId" placeholder="请输入学号">
+                      <el-input v-model="reserveForm1.data.stuId" placeholder="请输入学号" disabled>
 
                       </el-input>
                     </el-form-item>
                     <el-form-item label="姓名" prop="name">
-                      <el-input v-model="registerForm.data.name" placeholder="请输入真实姓名">
+                      <el-input v-model="reserveForm1.data.name" placeholder="请输入真实姓名" disabled>
 
                       </el-input>
                     </el-form-item>
-                    <el-form-item label="班级" prop="clazz">
-                      <el-input v-model="registerForm.data.clazz" placeholder="请输入班级">
-
-                      </el-input>
-                    </el-form-item>
-                    <el-form-item label="电话" prop="phone">
-                      <el-input v-model="registerForm.data.phone" placeholder="请输入电话号码">
-
-                      </el-input>
+                    <el-form-item label="面试时间" prop="interviewId">
+                      <el-select v-model="reserveForm1.data.interviewId" style="width: 100%">
+                        <el-option v-for="item in reserveForm1.option" :key="item" :label="item.dateTime" :value="item.id"></el-option>
+                      </el-select>
                     </el-form-item>
 
                     <el-button class="register-submit"
                                type="primary"
-                               @click="registerSubmit()">
-                      报名
+                               @click="verifyCallback = reserve1Submit">
+                      预约
                     </el-button>
                   </el-form>
+                </div>
+
+                <div v-if="interviewResult1 === '正在进行'" style="text-align: left;padding: 5% 0;font-size: 20px">
+                  <h1>一面中...</h1>
+                  <p>我们会短信通知你面试时间地点</p>
+                  <p>请准时前往指定教室参加面试</p>
+                  <p>期待你的出色发挥</p>
+                  <p style="text-align: right">--软件科技协会</p>
+                </div>
+
+                <div v-if="interviewResult1 === '失败'"  style="text-align: left;padding: 5% 0;font-size: 20px">
+                  <h3>亲爱的同学</h3>
+                  <p>感谢你参加软件科技协会纳新</p>
+                  <p>对您在面试过程中所表现出来的积极努力和认真参与的态度，我们谨致以由衷的敬意和真诚的赞赏</p>
+                  <p>经过慎重的考虑和评估，很遗憾，您未能通过本次面试，相信您会找到更适合您的舞台</p>
+                  <p style="text-align: right">--软件科技协会</p>
+                </div>
+
+
               </div>
 
 
-              <!-- 二面预约 -->
+              <!-- 二面 -->
               <div v-if="active === 2">
-                <el-form ref='registerForm'
-                         :model='registerForm.data'
-                         :rules='registerForm.rule'
-                         label-position='right'
-                         label-width="auto">
-                  <el-form-item label="学号" prop="stuId">
-                    <el-input v-model="registerForm.data.stuId" placeholder="请输入学号">
+                <div v-if="interviewResult2 === ''">
+                  <el-form ref='reserveForm2'
+                           :model='reserveForm2.data'
+                           :rules='reserveForm2.rule'
+                           label-position='right'
+                           label-width="auto">
+                    <el-form-item label="学号" prop="stuId">
+                      <el-input v-model="reserveForm2.data.stuId" placeholder="请输入学号" disabled>
 
-                    </el-input>
-                  </el-form-item>
-                  <el-form-item label="姓名" prop="name">
-                    <el-input v-model="registerForm.data.name" placeholder="请输入真实姓名">
+                      </el-input>
+                    </el-form-item>
+                    <el-form-item label="姓名" prop="name">
+                      <el-input v-model="reserveForm2.data.name" placeholder="请输入真实姓名" disabled>
 
-                    </el-input>
-                  </el-form-item>
-                  <el-form-item label="班级" prop="clazz">
-                    <el-input v-model="registerForm.data.clazz" placeholder="请输入班级">
+                      </el-input>
+                    </el-form-item>
+                    <el-form-item label="面试时间" prop="interviewId">
+                      <el-select v-model="reserveForm2.data.interviewId" style="width: 100%">
+                        <el-option v-for="item in reserveForm2.option" :key="item" :label="item.dateTime" :value="item.id"></el-option>
+                      </el-select>
+                    </el-form-item>
 
-                    </el-input>
-                  </el-form-item>
-                  <el-form-item label="电话" prop="phone">
-                    <el-input v-model="registerForm.data.phone" placeholder="请输入电话号码">
+                    <el-button class="register-submit"
+                               type="primary"
+                               @click="verifyCallback = reserve2Submit">
+                      预约
+                    </el-button>
+                  </el-form>
+                </div>
 
-                    </el-input>
-                  </el-form-item>
+                <div v-if="interviewResult2 === '正在进行'" style="text-align: left;padding: 5% 0;font-size: 20px">
+                  <h1>二面中...</h1>
+                  <p>我们会短信通知你面试时间地点</p>
+                  <p>请准时前往指定教室参加面试</p>
+                  <p>期待你的出色发挥</p>
+                  <p style="text-align: right">--软件科技协会</p>
+                </div>
 
-                  <el-button class="register-submit"
-                             type="primary"
-                             @click="registerSubmit()">
-                    报名
-                  </el-button>
-                </el-form>
+                <div v-if="interviewResult2 === '失败'"  style="text-align: left;padding: 5% 0;font-size: 20px">
+                  <h3>亲爱的同学</h3>
+                  <p>感谢你参加软件科技协会纳新</p>
+                  <p>对您在面试过程中所表现出来的积极努力和认真参与的态度，我们谨致以由衷的敬意和真诚的赞赏</p>
+                  <p>经过慎重的考虑和评估，很遗憾，您未能通过本次面试，相信您会找到更适合您的舞台</p>
+                  <p style="text-align: right">--软件科技协会</p>
+                </div>
+
+
               </div>
-
               <!-- 面试结果显示 -->
               <div v-if="active === 3">
                 <el-form ref='registerForm'
@@ -161,8 +190,8 @@
 
                     </el-input>
                   </el-form-item>
-                  <el-form-item label="班级" prop="clazz">
-                    <el-input v-model="registerForm.data.clazz" placeholder="请输入班级">
+                  <el-form-item label="班级" prop="stuClass">
+                    <el-input v-model="registerForm.data.stuClass" placeholder="请输入班级">
 
                     </el-input>
                   </el-form-item>
@@ -186,6 +215,22 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-dialog class="verify"
+               @close="verifyCallback = ''"
+               :width="'350px'"
+               :title="'请完成验证'"
+               :visible="typeof verifyCallback === 'function'">
+      <slide-verify :l="42"
+                    :r="10"
+                    :w="310"
+                    :h="155"
+                    ref="refresh"
+                    slider-text="向右滑动"
+                    @success="onSuccess"
+                    @fail="onFail"
+                    @refresh="onRefresh"
+      ></slide-verify>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -195,18 +240,20 @@ export default {
   name: 'Schedule',
   data() {
     return {
-      active: 0,
-      interviewResult:'',
+      verifyCallback: '',
+      active: -1,
+      interviewResult1: '',
+      interviewResult2: '',
       registerForm: {
         data: {
-          choose: '',
+          direction: '',
           stuId: '',
           name: '',
-          clazz: '',
+          stuClass: '',
           phone: ''
         },
         rule: {
-          choose: [
+          direction: [
             {required: true, message: '请选择方向', trigger: 'blur'},
           ],
           stuId: [
@@ -223,7 +270,7 @@ export default {
               trigger: 'blur'
             }
           ],
-          clazz: [
+          stuClass: [
             {required: true, message: '请输入班级', trigger: 'blur'},
             {min: 2, max: 32, message: '班级2-32位,请输入正确的班级信息', trigger: 'blur'}
           ],
@@ -233,8 +280,41 @@ export default {
           ],
         }
       },
-      reserveForm: {
-
+      reserveForm1: {
+        data: {
+          interviewId: '',
+          name: '',
+          stuId: ''
+        },
+        rule: {
+          stuId: [
+            {required: true, message: '请输入学号', trigger: 'blur'},
+            {pattern: '^([0-9]{8})([0-9]{2})?$', message: '学号为8位/10位数字', trigger: 'blur'}
+          ],
+          name: [
+            {required: true, message: '请输入姓名', trigger: 'blur'},
+            {
+              min: 2,
+              max: 10,
+              pattern: "^((?![\\u3000-\\u303F])[\\u2E80-\\uFE4F]|·)*(?![\\u3000-\\u303F])[\\u2E80-\\uFE4F](·)*$",
+              message: '姓名为2-10位汉字,请输入正确的姓名',
+              trigger: 'blur'
+            }
+          ],
+          interviewId: [
+            {required: true, message: '请选择面试场次', trigger: 'blur'},
+          ],
+        },
+        option: []
+      },
+      reserveForm2: {
+        data: {
+          interviewId: '',
+          name: this.$store.state.name,
+          stuId: this.$store.state.stuId
+        },
+        rule: {},
+        option: []
       }
     }
   },
@@ -242,27 +322,59 @@ export default {
     this.registerForm.data.stuId = this.$store.state.stuId
     this.registerForm.data.name = this.$store.state.name
 
-    if(this.registerForm.data.stuId === '' || this.registerForm.data.name === ''){
+    if (this.registerForm.data.stuId === '' || this.registerForm.data.name === '') {
       this.$router.push('/login')
     }
+    this.init()
+  },
+  methods: {
+    onSuccess(){
+      if(typeof this.verifyCallback === 'function'){
+        this.verifyCallback();
+        this.verifyCallback = '';
+        this.onRefresh()
+      }
+    },
+    onFail(){
+      this.$message({
+        type : 'error',
+        message : '验证失败，请重新验证'
+      })
+      this.verifyCallback = '';
+    },onRefresh(){
+      this.$refs.refresh.reset();
+    },
 
-    let userInfo = this.getUserInfo(this.registerForm.data.name, this.registerForm.data.stuId);
-    console.log(userInfo)
-
-    // axios({
-    //   method: '',
-    //   url: '',
-    //   data: ''
-    // }).then(res => {
-    //   //todo 从store获取用户信息,获取不到就退回login
-    //   console.log(res)
-    //   this.active = 1
-    // }).catch(err => {
-    //   //todo 出err给用户提示
-    //   console.log(err)
-    // })
-  }, methods: {
+    async init() {
+      let userInfo = await this.getUserInfo(this.registerForm.data.name, this.registerForm.data.stuId);
+      this.active = userInfo.items.level
+      switch (this.active) {
+        case 0:
+          this.registerInit();
+          break;
+        case 1:
+          this.reserve1Init();
+          break;
+        case 2:
+          this.loading1Init(userInfo);
+          break;
+        case 3:
+          this.reserve2Init();
+          break;
+        case 4:
+          this.loading2Init(userInfo);
+          break;
+        default: {
+          this.$message({
+            type: "error",
+            message: '出错啦'
+          })
+          await this.$router.push('/login')
+        }
+      }
+    },
     async getUserInfo(name, stuId) {
+      let result = ''
       await axios({
         method: 'post',
         url: '/enrollservice/enrollstu/findStudent',
@@ -271,52 +383,198 @@ export default {
           stuId
         }
       }).then(res => {
-        return res
+        if (res.data.code === 20000) {
+          result = res.data.data
+        } else {
+          this.$message({
+            type: "error",
+            message: res.data.data.items
+          })
+          this.$router.push('/login')
+        }
+      }).catch(() => {
+        this.$message({
+          type: "error",
+          message: '请求出错,请尝试刷新本页面'
+        })
+        this.$router.push('/login')
       })
+      return result
     },
     registerSubmit() {
       this.$refs["registerForm"].validate((valid) => {
         if (valid) {
-          this.$confirm('确认提交?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            let form = this.registerForm.data;
-
-            axios({
-              method: '',
-              url: '',
-              data: (form)
-            }).then(res => {
-              //todo 验证是否报名成功 成功跳转下一项 失败弹提示
-              console.log(res)
+          let form = this.registerForm.data;
+          axios({
+            method: 'post',
+            url: '/enrollservice/enrollstu/addStudent',
+            data: (form)
+          }).then(res => {
+            //验证是否报名成功
+            if (res.data.success) {
               this.$message({
                 type: "success",
                 message: "报名成功啦!!!"
               })
-              this.active = 1
-            }).catch(err => {
-              //todo 出err给用户提示
-              console.log(err)
+              this.reserve1Init()
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data['items']
+              })
+              location.reload()
+            }
+          }).catch(() => {
+            this.$message({
+              type: "error",
+              message: '请求出错,请尝试刷新本页面'
             })
-
           })
         }
       })
+    },
+    reserve1Submit() {
+      this.$refs["reserveForm1"].validate((valid) => {
+        if (valid) {
+          let form = this.reserveForm1.data;
+          axios({
+            method: 'post',
+            url: '/enrollservice/enrollstu/reserve',
+            data: (form)
+          }).then(res => {
+            //验证是否预约成功
+            if (res.data.success) {
+              this.$message({
+                type: "success",
+                message: "预约成功啦，请等待短信通知"
+              })
+              this.active = 1
+              this.interviewResult1 = '正在进行'
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data['items']
+              })
+            }
+          }).catch(() => {
+            this.$message({
+              type: "error",
+              message: '请求出错,请尝试刷新本页面'
+            })
+          })
+        }
+      })
+    },
+    reserve2Submit() {
+      this.$refs["reserveForm2"].validate((valid) => {
+        if (valid) {
+
+          let form = this.reserveForm2.data;
+          axios({
+            method: 'post',
+            url: '/enrollservice/enrollstu/reserve',
+            data: (form)
+          }).then(res => {
+            //验证是否预约成功
+            if (res.data.success) {
+              this.$message({
+                type: "success",
+                message: "预约成功啦，请等待短信通知"
+              })
+              this.active = 2
+              this.interviewResult1 = '正在进行'
+            } else {
+              this.$message({
+                type: "error",
+                message: res.data.data['items']
+              })
+            }
+          }).catch(() => {
+            this.$message({
+              type: "error",
+              message: '请求出错,请尝试刷新本页面'
+            })
+          })
+
+
+        }
+      })
+    },
+    registerInit() {
+
+    },
+    reserve1Init() {
+      this.active = 1;
+      this.reserveForm1.data.name = this.$store.state.name
+      this.reserveForm1.data.stuId = this.$store.state.stuId
+      axios({
+        method: 'get',
+        url: '/enrollservice/enrollstu/reserve/1',
+      }).then(res => {
+        if (res.data.code === 20000) {
+          this.reserveForm1.option = res.data.data.items
+        } else {
+          this.$message({
+            type: "error",
+            message: res.data.data.items
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: "error",
+          message: '获取预约时间信息失败，请稍后再试'
+        })
+      })
+    },
+    reserve2Init() {
+      this.active = 2;
+      this.reserveForm2.data.name = this.$store.state.name
+      this.reserveForm2.data.stuId = this.$store.state.stuId
+      axios({
+        method: 'get',
+        url: '/enrollservice/enrollstu/reserve/2',
+      }).then(res => {
+        if (res.data.code === 20000) {
+          this.reserveForm1.option = res.data.data.items
+        } else {
+          this.$message({
+            type: "error",
+            message: res.data.data.items
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: "error",
+          message: '获取预约时间信息失败，请稍后再试'
+        })
+      })
+    },
+    loading1Init(userInfo){
+      this.active = 1
+      this.interviewResult1 = userInfo.items['interviewList']['一面']
+    },
+    loading2Init(userInfo){
+      this.active = 2
+      this.interviewResult2 = userInfo.items['interviewList']['二面']
+    },
+    resultInit() {
+
     }
   }
 }
 </script>
+<style>
+.confirmBox{
+width: 300px;
+}
+</style>
 <style scoped>
 
 .box-card{
   background: rgba(255,255,255,0.618);
-  margin-top: 10%;
-  margin-bottom: 10%;
-  margin-left: 2%;
-  max-width: 1200px;
-  height: auto;
+  margin: 10% auto;
+  max-width: 800px;
+  min-width: 300px;
 }
 
 .schedule_steps{
@@ -338,7 +596,10 @@ export default {
   min-height: 400px;
 }
 
-.choose-select{
+.direction-select{
   width: 100%;
+}
+.schedule{
+  padding: 1%;
 }
 </style>

@@ -2,7 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import SlideVerify from 'vue-monoplasty-slide-verify';
 
+Vue.use(SlideVerify);
 // 引入UI组件库
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -10,12 +12,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './http'
 
 Vue.use(ElementUI)
-
-
-// 配置axios
-// import axios from 'axios'
-// axios.defaults.withCredentials=true;//携带cookie
-// Vue.prototype.$axios = axios;
 
 
 Vue.config.productionTip = false

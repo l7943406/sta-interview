@@ -2,11 +2,11 @@
   <div class="login">
     <el-row class="login_row" align="middle" type="flex">
       <el-col :xs="{span:0,offset:0}"
-              :sm="{span:12,offset:1}"
-              :md="{span:8,offset:1}"
+              :sm="{span:1,offset:0}"
+              :md="{span:8,offset:2}"
               :lg="{span:8,offset:3}"
               :xl="{span:8,offset:5}">
-        <div class="stu-info">
+        <div class="stu-info" v-if="vis">
           <span style="font-size: 30px;">
             软件科技协会
           </span>
@@ -20,8 +20,8 @@
       </el-col>
 
       <el-col :xs="{span:20,offset:2}"
-              :sm="{span:16,offset:0}"
-              :md="{span:10,offset:4}"
+              :sm="{span:16,offset:3}"
+              :md="{span:10,offset:3}"
               :lg="{span:10,offset:2}"
               :xl="{span:10,offset:0}">
         <el-card class="login-card" shadow="always">
@@ -31,7 +31,7 @@
 
                    :model='loginForm.data'
                    :rules='loginForm.rule'>
-            <div style="width:100%; text-align: center;font-weight: bold;font-size: 20px;">软件科技协会-面试报名</div>
+            <div style="width:100%; text-align: center;font-weight: bold;font-size: 20px;">软件科技协会-2021秋招</div>
             <el-form-item label="学号" prop="stuId">
               <el-input
                   placeholder="请输入学号"
@@ -49,23 +49,47 @@
               </el-input>
             </el-form-item>
 
-            <el-button type="primary" @click="enter" class="enter-button">我来啦</el-button>
+
+
+            <el-button type="primary" @click="verifyCallback = enter" class="enter-button">我来啦</el-button>
 
 
           </el-form>
         </el-card>
       </el-col>
     </el-row>
+    <el-dialog class="verify"
+               @close="verifyCallback = ''"
+               :width="'350px'"
+               :title="'请完成验证'"
+               :visible="typeof verifyCallback === 'function'">
+      <slide-verify :l="42"
+                    :r="10"
+                    :w="310"
+                    :h="155"
+                    ref="refresh"
+                    slider-text="向右滑动"
+                    @success="onSuccess"
+                    @fail="onFail"
+                    @refresh="onRefresh"
+      ></slide-verify>
+    </el-dialog>
   </div>
-
-
 </template>
 <script>
 
+
 export default {
   name: 'Login',
+  mounted() {
+    window.addEventListener('resize', () => {
+      this.vis = document.body.clientWidth >= 992;
+    })
+  },
   data() {
     return {
+      verifyCallback: '',
+      vis: true,
       loginForm: {
         data: {
           name: '',
@@ -91,6 +115,22 @@ export default {
     }
   },
   methods: {
+    onSuccess() {
+      if (typeof this.verifyCallback === 'function') {
+        this.verifyCallback();
+        this.verifyCallback = '';
+        this.onRefresh()
+      }
+    },
+    onFail() {
+      this.$message({
+        type: 'error',
+        message: '验证失败，请重新验证'
+      })
+      this.verifyCallback = '';
+    }, onRefresh() {
+      this.$refs.refresh.reset();
+    },
     enter() {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
@@ -101,7 +141,7 @@ export default {
           this.$message.warning("请输入学号和姓名");
         }
       })
-    }
+    },
   }
 }
 </script>
@@ -137,17 +177,22 @@ export default {
 
 .stu-info {
   max-width: 490px;
+  min-width: 400px;
   line-height: 30px;
   color: white;
 }
 
 .login_row {
   max-width: 2600px;
-  position: absolute;
+  position: fixed;
   margin: auto;
   left: 0;
   right: 0;
   top: -10%;
   bottom: 0;
+}
+.login{
+  width: 100%;
+  height: 100%;
 }
 </style>

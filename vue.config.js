@@ -9,7 +9,7 @@ module.exports = {
         },
         proxy: {
             "/": {
-                target: "http://192.168.0.4:8080",
+                target: "http://huberytu.cn:11111/",
                 changeOrigin: true, // 是否改变域名
                 ws: true,
                 pathRewrite: {
@@ -19,5 +19,4 @@ module.exports = {
             }
         }
     }
-
 }

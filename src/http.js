@@ -15,7 +15,10 @@ let loadingInstance = null;
 const loadingShow = () => {
     if (requestCount === 0) {
         if (loadingInstance === null) {
-            loadingInstance = Loading.service({fullscreen: true, text: '努力加载中...'})
+            loadingInstance = Loading.service({
+                fullscreen: true,
+                text: '努力加载中...',
+            })
         }
     }
     requestCount++;
