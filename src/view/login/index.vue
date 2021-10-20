@@ -51,7 +51,7 @@
 
 
 
-            <el-button type="primary" @click="verifyCallback = enter" class="enter-button">我来啦</el-button>
+            <el-button type="primary" @click="doEnter" class="enter-button">我来啦</el-button>
 
 
           </el-form>
@@ -98,7 +98,7 @@ export default {
         rule: {
           stuId: [
             {required: true, message: '请输入学号', trigger: 'blur'},
-            {pattern: '^([0-9]{8})([0-9]{2})?$', message: '学号为8位/10位数字', trigger: 'blur'}
+            {pattern: '^([0-9]{8})$', message: '学号为8位数字', trigger: 'blur'}
           ],
           name: [
             {required: true, message: '请输入姓名', trigger: 'blur'},
@@ -130,6 +130,13 @@ export default {
       this.verifyCallback = '';
     }, onRefresh() {
       this.$refs.refresh.reset();
+    },
+    doEnter(){
+      this.$refs['loginForm'].validate((valid) => {
+        if (valid) {
+          this.verifyCallback = this.enter
+        }
+      })
     },
     enter() {
       this.$refs['loginForm'].validate((valid) => {

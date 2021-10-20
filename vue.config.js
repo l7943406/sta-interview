@@ -9,12 +9,12 @@ module.exports = {
         },
         proxy: {
             "/": {
-                target: "http://huberytu.cn:11111/",
+                target: "http://sta.muchen7.cn:11111/",
                 changeOrigin: true, // 是否改变域名
                 ws: true,
                 pathRewrite: {
                     // 路径重写
-                    "/": ""
+                    "/enrollservice": "/enrollservice"
                 }
             }
         }

@@ -6,6 +6,8 @@
     <meta content="width=device-width,initial-scale=1.0" name="viewport">
     <link href="favicon.ico" rel="icon">
     <title>软件科技协会</title>
+
+
 </head>
 <body style="margin: 0;">
 <noscript>
@@ -13,5 +15,42 @@
 </noscript>
 <div id="app"></div>
 <!-- built files will be auto injected -->
+
+
 </body>
+<style>
+    html {
+        touch-action: none;
+        touch-action: pan-y;
+    }
+
+</style>
+<script>
+    document.addEventListener("touchmove", function (e) {
+        e.preventDefalut()
+    }, {
+        passive: false
+    });
+
+
+    var startX, startY;
+    document.addEventListener("touchstart", function (e) {
+
+        startX = e.targetTouches[0].pageX;
+        startY = e.targetTouches[0].pageY;
+    });
+
+    document.addEventListener("touchmove", function (e) {
+
+        var moveX = e.targetTouches[0].pageX;
+        var moveY = e.targetTouches[0].pageY;
+
+        if (Math.abs(moveX - startX) > Math.abs(moveY - startY)) {
+            e.preventDefault();
+        }
+    }, {
+        passive: false
+    });
+
+</script>
 </html>
