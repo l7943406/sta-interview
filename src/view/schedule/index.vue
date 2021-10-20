@@ -187,7 +187,7 @@
           </el-col>
 
           <div style="float: right;text-align: right;">
-            <el-link v-if="active > 0"
+            <el-link v-if="active > 0 && active < 3"
                      class="el-icon-user"
                      style="font-size: 18px;padding-bottom: 10px"
                      @click="showUserInfoDialog"
@@ -205,16 +205,17 @@
 
     <el-dialog @close="userInfoDialog = false"
                :width="'350px'"
+               custom-class="userInfoDialogClass"
                :title="'报名信息'"
                :visible="userInfoDialog">
-      <div v-html="userInfo" style="line-height: 10px;margin-left: 10%;color: black;font-size: 18px;"></div>
+      <div v-html="userInfo" style="line-height: 10px;margin-left: 10%;color: #303133;font-size: 18px;"></div>
     </el-dialog>
 
 
     <el-dialog class="verify"
                @close="verifyCallback = ''"
                :width="'350px'"
-               :title="'请完成验证'"
+               :title="'拖动下方滑块完成拼图'"
                :visible="typeof verifyCallback === 'function'">
       <slide-verify :l="42"
                     :r="10"
@@ -630,6 +631,11 @@ export default {
 }
 </script>
 
+<style>
+.userInfoDialogClass{
+  opacity: 0.9;
+}
+</style>
 <style scoped>
 
 .box-card{
@@ -664,4 +670,5 @@ export default {
 .schedule{
   padding: 1%;
 }
+
 </style>

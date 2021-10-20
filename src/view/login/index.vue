@@ -61,7 +61,7 @@
     <el-dialog class="verify"
                @close="verifyCallback = ''"
                :width="'350px'"
-               :title="'请完成验证'"
+               :title="'拖动下方滑块完成拼图'"
                :visible="typeof verifyCallback === 'function'">
       <slide-verify :l="42"
                     :r="10"
