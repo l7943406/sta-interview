@@ -83,12 +83,13 @@
 export default {
   name: 'Login',
   mounted() {
-    for (let i = 0; i < 100; i++) {
-      this.img.push('http://chat-image.muchen7.cn/random/'+ Math.floor(Math.random()*99) +'.jpg')
-    }
+    this.vis = document.body.clientWidth >= 992;
     window.addEventListener('resize', () => {
       this.vis = document.body.clientWidth >= 992;
     })
+    for (let i = 0; i < 100; i++) {
+      this.img.push('http://chat-image.muchen7.cn/random/'+ Math.floor(Math.random()*99) +'.jpg')
+    }
   },
   data() {
     return {
