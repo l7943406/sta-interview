@@ -272,6 +272,7 @@ export default {
       img: [],
       userInfoDialog: false,
       userInfo:'',
+      userInfoCache:'',
       verifyCallback: '',
       active: -1,
       interviewResult: '',
@@ -397,7 +398,10 @@ export default {
     },
     //个人信息展示
     async showUserInfoDialog(){
-      let userInfo = await this.getUserInfo(this.$store.state.name, this.$store.state.stuId)
+      if(this.userInfoCache === ''){
+        this.userInfoCache = await this.getUserInfo(this.$store.state.name, this.$store.state.stuId)
+      }
+      let userInfo = this.userInfoCache
       let s = ""
       s += "<p>姓名&nbsp; :&nbsp;  " + userInfo['items'].name + "</p><br>"
       s += "<p>学号&nbsp; :&nbsp;  " + userInfo['items'].stuId + "</p><br>"
