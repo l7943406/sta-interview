@@ -16,8 +16,8 @@
               <!-- 步骤条 -->
               <el-steps  :active="active" finish-status="success">
                 <el-step title="报名"></el-step>
-                <el-step title="一面"></el-step>
-                <el-step title="二面"></el-step>
+                <el-step title="一面" :status="interviewResult1"></el-step>
+                <el-step title="二面" :status="interviewResult2"></el-step>
                 <el-step title="结果" :status="interviewResult"></el-step>
               </el-steps>
             </div>
@@ -117,6 +117,14 @@
                   <p style="text-align: right">——软件科技协会</p>
                 </div>
 
+                <div v-if="interviewResult1 === 'error'"  style="text-align: left;padding: 5% 0;font-size: 20px">
+                  <h3 v-text="'亲爱的 ' + this.$store.state.name + ' 同学：'" style="color:#000;font-weight: 1000"></h3>
+                  <p>很遗憾，经过慎重的考虑和评估，你<a style="color: indianred;font-weight: 700"> 未能通过 </a>本轮面试。</p>
+                  <p>对你在面试过程中所表现出来的认真努力的态度，我们表以真诚的赞赏。希望你能继续努力，我们高处见！</p>
+                  <p>感谢你选择并参加软件科技协会纳新面试！</p>
+                  <p style="text-align: right">——软件科技协会</p>
+                </div>
+
               </div>
 
 
@@ -160,18 +168,26 @@
                   <p style="text-align: right">——软件科技协会</p>
                 </div>
 
-              </div>
-
-
-              <!-- 面试结果显示 -->
-              <div v-if="active === 3 || active===4">
-                <div v-if="interviewResult === 'error'"  style="text-align: left;padding: 5% 0;font-size: 20px">
+                <div v-if="interviewResult2 === 'error'"  style="text-align: left;padding: 5% 0;font-size: 20px">
                   <h3 v-text="'亲爱的 ' + this.$store.state.name + ' 同学：'" style="color:#000;font-weight: 1000"></h3>
                   <p>很遗憾，经过慎重的考虑和评估，你<a style="color: indianred;font-weight: 700"> 未能通过 </a>本轮面试。</p>
                   <p>对你在面试过程中所表现出来的认真努力的态度，我们表以真诚的赞赏。希望你能继续努力，我们高处见！</p>
                   <p>感谢你选择并参加软件科技协会纳新面试！</p>
                   <p style="text-align: right">——软件科技协会</p>
                 </div>
+
+              </div>
+
+
+              <!-- 面试结果显示 -->
+              <div v-if="active === 3 || active===4">
+<!--                <div v-if="interviewResult === 'error'"  style="text-align: left;padding: 5% 0;font-size: 20px">-->
+<!--                  <h3 v-text="'亲爱的 ' + this.$store.state.name + ' 同学：'" style="color:#000;font-weight: 1000"></h3>-->
+<!--                  <p>很遗憾，经过慎重的考虑和评估，你<a style="color: indianred;font-weight: 700"> 未能通过 </a>本轮面试。</p>-->
+<!--                  <p>对你在面试过程中所表现出来的认真努力的态度，我们表以真诚的赞赏。希望你能继续努力，我们高处见！</p>-->
+<!--                  <p>感谢你选择并参加软件科技协会纳新面试！</p>-->
+<!--                  <p style="text-align: right">——软件科技协会</p>-->
+<!--                </div>-->
 
 
                 <div v-if="interviewResult === 'success'"  style="text-align: left;padding: 9% 0;font-size: 20px">
@@ -216,11 +232,13 @@
 
     <!-- 报名信息dialog -->
     <el-dialog @close="userInfoDialog = false"
-               :width="'350px'"
+               :width="'300px'"
                custom-class="userInfoDialogClass"
-               :title="'报名信息'"
                :visible="userInfoDialog">
-      <div v-html="userInfo" style="line-height: 10px;margin-left: 10%;color: #303133;font-size: 18px;"></div>
+      <template slot="title">
+        <span class="el-icon-user-solid" style="  color: #00a1d6;">报名信息</span>
+      </template>
+      <div v-html="userInfo" style="line-height: 2px;margin-left: 8%;color: #303133;font-size: 16px;"></div>
     </el-dialog>
 
 
@@ -478,8 +496,7 @@ export default {
           this.loading2Init(userInfo);
           break;
         case 5:
-          this.active = 3
-          this.interviewResult = 'error'
+          this.falseInit(userInfo)
           break;
         case 6:
           this.active = 4
@@ -492,6 +509,17 @@ export default {
           })
           await this.$router.push('/login')
         }
+      }
+    },
+    falseInit(userInfo){
+      console.log(userInfo['items']['interviewList']['二面'])
+      if(userInfo['items']['interviewList']['二面'] === '未通过'){
+        this.active = 2
+        this.interviewResult2 = 'error'
+      }else{
+        this.active = 1
+        this.interviewResult1 = 'error'
+
       }
     },
     //同步获取userinfo 加载失败 active置-2 进入错误页
@@ -512,6 +540,9 @@ export default {
             type: "error",
             message: res.data.data.items
           })
+          if(res.data.data.items === '学号和姓名有误，请重新输入'){
+            this.$router.push('/login')
+          }
           this.active = -2;
         }
       }).catch(() => {
@@ -688,6 +719,9 @@ export default {
 </script>
 
 <style>
+pp{
+  color: cornflowerblue;
+}
 .userInfoDialogClass{
   opacity: 0.9;
 }
