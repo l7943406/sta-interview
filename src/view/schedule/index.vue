@@ -12,7 +12,7 @@
         <el-card class="box-card">
 
           <div slot="header" class="box-card-header">
-            <div class="schedule_steps" style="width: 100%;">
+            <div class="schedule_steps" style="width: 90%;">
               <!-- 步骤条 -->
               <el-steps  :active="active" finish-status="success">
                 <el-step title="报名"></el-step>
