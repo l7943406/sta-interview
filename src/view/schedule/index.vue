@@ -1,14 +1,19 @@
 <template>
   <div class="schedule">
+    <!-- el-row 响应式布局容器 -->
     <el-row class="schedule_row">
+      <!-- 布局内容 -->
       <el-col :xs="{span:24,offset:0}"
               :sm="{span:20,offset:2}"
               :md="{span:16,offset:4}"
               :lg="{span:12,offset:6}"
               :xl="{span:8,offset:8}">
+        <!-- 主体 -->
         <el-card class="box-card">
+
           <div slot="header" class="box-card-header">
-            <div class="schedule_steps" style="width: 90%;margin: 0 auto;">
+            <div class="schedule_steps" style="width: 100%;">
+              <!-- 步骤条 -->
               <el-steps  :active="active" finish-status="success">
                 <el-step title="报名"></el-step>
                 <el-step title="一面"></el-step>
@@ -18,6 +23,7 @@
             </div>
           </div>
 
+          <!-- 主体内容响应式 -->
           <el-col :xs="{span:24,offset:0}"
                   :sm="{span:20,offset:2}"
                   :md="{span:18,offset:3}"
@@ -108,7 +114,7 @@
                   <p>我们会短信通知你面试时间地点</p>
                   <p>请准时前往指定教室参加面试</p>
                   <p>期待你的出色发挥</p>
-                  <p style="text-align: right">--软件科技协会</p>
+                  <p style="text-align: right">——软件科技协会</p>
                 </div>
 
               </div>
@@ -151,7 +157,7 @@
                   <p>我们会短信通知你面试时间地点</p>
                   <p>请准时前往指定教室参加面试</p>
                   <p>期待你的出色发挥</p>
-                  <p style="text-align: right">--软件科技协会</p>
+                  <p style="text-align: right">——软件科技协会</p>
                 </div>
 
               </div>
@@ -160,20 +166,20 @@
               <!-- 面试结果显示 -->
               <div v-if="active === 3 || active===4">
                 <div v-if="interviewResult === 'error'"  style="text-align: left;padding: 5% 0;font-size: 20px">
-                  <h3>亲爱的同学</h3>
-                  <p>感谢你参加软件科技协会纳新</p>
-                  <p>对您在面试过程中所表现出来的积极努力和认真参与的态度，我们谨致以由衷的敬意和真诚的赞赏</p>
-                  <p>经过慎重的考虑和评估，很遗憾，您未能通过本次面试，相信您会找到更适合您的舞台</p>
-                  <p style="text-align: right">--软件科技协会</p>
+                  <h3 v-text="'亲爱的 ' + this.$store.state.name + ' 同学：'" style="color:#000;font-weight: 1000"></h3>
+                  <p>很遗憾，经过慎重的考虑和评估，你<a style="color: indianred;font-weight: 700"> 未能通过 </a>本轮面试。</p>
+                  <p>对你在面试过程中所表现出来的认真努力的态度，我们表以真诚的赞赏。希望你能继续努力，我们高处见！</p>
+                  <p>感谢你选择并参加软件科技协会纳新面试！</p>
+                  <p style="text-align: right">——软件科技协会</p>
                 </div>
 
 
                 <div v-if="interviewResult === 'success'"  style="text-align: left;padding: 9% 0;font-size: 20px">
-                  <h3 v-text="this.$store.state.name + '同学'" style="color:#000;font-weight: 1000"></h3>
-                  <p> 你好，我是软件科技协会人力资源部胡图图。</p>
-                  <p>很高兴告知您<a style="color: forestgreen"> 面试通过 </a>，恭喜你成为软件科技协会的一员。</p>
-                  <p>后续将短信通知你相关事宜，请注意查收。</p>
-                  <p style="text-align: right">--软件科技协会</p>
+                  <h3 v-text="'亲爱的 ' + this.$store.state.name + ' 同学：'" style="color:#000;font-weight: 1000"></h3>
+                  <p>你好呀，我是软件科技协会人力资源部胡图图~</p>
+                  <p>很高兴告知你<a style="color: forestgreen;font-weight: 700"> 面试通过 </a>，恭喜你成为软件科技协会的一员！</p>
+                  <p>后续相关事宜将通过短信通知你，请注意查收。</p>
+                  <p style="text-align: right">——软件科技协会</p>
                 </div>
               </div>
 
@@ -184,25 +190,31 @@
                 </div>
               </div>
             </div>
-          </el-col>
 
-          <div style="float: right;text-align: right;">
+
+          </el-col>
+          <!-- 右下角内容 -->
+          <div style="right: 15px; bottom: 10px;position: absolute">
             <el-link v-if="active > 0 && active < 3"
+                     :underline="false"
                      class="el-icon-user"
                      style="font-size: 18px;padding-bottom: 10px"
                      @click="showUserInfoDialog"
                      type="primary">报名信息</el-link>
             <br>
             <el-link v-if="active === 1 && interviewResult1 === '正在进行'"
+                     :underline="false"
                      @click="interviewQuestions"
                      class="el-icon-download"
                      style="font-size: 18px;padding-bottom: 10px"
                      type="warning">面试题下载</el-link>
           </div>
+
         </el-card>
       </el-col>
     </el-row>
 
+    <!-- 报名信息dialog -->
     <el-dialog @close="userInfoDialog = false"
                :width="'350px'"
                custom-class="userInfoDialogClass"
@@ -212,14 +224,15 @@
     </el-dialog>
 
 
+    <!-- 验证码dialog -->
     <el-dialog class="verify"
                @close="verifyCallback = ''"
-               :width="'350px'"
+               :width="'340px'"
                :title="'拖动下方滑块完成拼图'"
                :visible="typeof verifyCallback === 'function'">
       <slide-verify :l="42"
                     :r="10"
-                    :w="310"
+                    :w="300"
                     :h="155"
                     ref="refresh"
                     slider-text="向右滑动"
@@ -237,6 +250,7 @@ export default {
   name: 'Schedule',
   data() {
     return {
+      img: ['https://picsum.photos/300/150'],
       userInfoDialog: false,
       userInfo:'',
       verifyCallback: '',
@@ -343,18 +357,22 @@ export default {
     if (this.registerForm.data.stuId === '' || this.registerForm.data.name === '') {
       this.$router.push('/login')
     }
-    this.init()
+    this.doInit()
   },
   methods: {
+    //路由 login
     back(){
       this.$router.push('/login')
     },
+    //刷新本页面
     reload(){
       location.reload()
     },
+    //新标签页打开面试题下载页
     interviewQuestions(){
       window.open('http://chat-image.muchen7.cn/questions.pdf', '_blank');
     },
+    //个人信息展示
     async showUserInfoDialog(){
       let userInfo = await this.getUserInfo(this.$store.state.name, this.$store.state.stuId)
       let s = ""
@@ -366,6 +384,7 @@ export default {
       this.userInfo = s;
       this.userInfoDialog = true;
     },
+    //二面预约 ***点击按钮时 先validate 在启用验证码，验证通过时回调Submit***
     doReserve2Submit(){
       this.$refs["reserveForm2"].validate((valid) => {
         if (valid) {
@@ -373,6 +392,7 @@ export default {
         }
       })
     },
+    //一面预约 ***点击按钮时 先validate 在启用验证码，验证通过时回调Submit***
     doReserve1Submit(){
       this.$refs["reserveForm1"].validate((valid) => {
         if (valid) {
@@ -380,6 +400,7 @@ export default {
         }
       })
     },
+    //报名 ***点击按钮时 先validate 在启用验证码，验证通过时回调Submit***
     doRegisterSubmit(){
       this.$refs["registerForm"].validate((valid) => {
         if (valid) {
@@ -387,30 +408,59 @@ export default {
         }
       })
     },
+    //验证码验证成功回调
     onSuccess(){
       if(typeof this.verifyCallback === 'function'){
         this.verifyCallback();
         this.verifyCallback = '';
+        this.$store.commit("setCount", 0);
         this.onRefresh()
       }
     },
+    //验证码验证失败回调
     onFail(){
       this.$message({
         type : 'error',
         message : '验证失败，请重新验证'
       })
       this.verifyCallback = '';
-    },onRefresh(){
+    },
+    //验证码 通过父容器刷新
+    onRefresh(){
+      this.img = ['https://picsum.photos/300/150/?time = ' + Date.now()]
       this.$refs.refresh.reset();
     },
-
+    async doInit(){
+      let count = this.$store.state.count
+      if(count > 8){
+        this.verifyCallback = this.init
+      }else{
+        await this.init()
+      }
+    },
+    //页面init操作 通过init加载页面逻辑
+    /*
+      level
+      0 报名
+      1 预约
+      2 一面中
+      3 预约
+      4 二面中
+      5 面试未通过
+      6 面试已通过
+    * */
     async init() {
+      if(this.$store.state.count > 8){
+        this.$store.commit("setCount", 0);
+      }else{
+        this.$store.commit("setCount", Number(this.$store.state.count) + 1);
+      }
+
       let userInfo = await this.getUserInfo(this.registerForm.data.name, this.registerForm.data.stuId);
       this.active = userInfo.items.level
       switch (this.active) {
-        case 0:
-          this.registerInit();
-          break;
+        // 报名无初始化步骤 直接break
+        case 0: break;
         case 1:
           this.reserve1Init();
           break;
@@ -440,6 +490,7 @@ export default {
         }
       }
     },
+    //同步获取userinfo 加载失败 active置-2 进入错误页
     async getUserInfo(name, stuId) {
       let result = ''
       await axios({
@@ -468,6 +519,7 @@ export default {
       })
       return result
     },
+    // 报名 提交
     registerSubmit() {
       this.$refs["registerForm"].validate((valid) => {
         if (valid) {
@@ -500,6 +552,7 @@ export default {
         }
       })
     },
+    // 预约一面 提交
     reserve1Submit() {
       this.$refs["reserveForm1"].validate((valid) => {
         if (valid) {
@@ -532,6 +585,7 @@ export default {
         }
       })
     },
+    // 预约二面 提交
     reserve2Submit() {
       this.$refs["reserveForm2"].validate((valid) => {
         if (valid) {
@@ -567,9 +621,7 @@ export default {
         }
       })
     },
-    registerInit() {
-
-    },
+    //预约一面 初始化加载面试时间
     reserve1Init() {
       this.active = 1;
       this.reserveForm1.data.name = this.$store.state.name
@@ -593,6 +645,7 @@ export default {
         })
       })
     },
+    //预约二面 初始化加载面试时间
     reserve2Init() {
       this.active = 2;
       this.reserveForm2.data.name = this.$store.state.name
@@ -616,17 +669,16 @@ export default {
         })
       })
     },
+    //一面中
     loading1Init(userInfo){
       this.active = 1
       this.interviewResult1 = userInfo.items['interviewList']['一面']
     },
+    //二面中
     loading2Init(userInfo){
       this.active = 2
       this.interviewResult2 = userInfo.items['interviewList']['二面']
     },
-    resultInit() {
-
-    }
   }
 }
 </script>
@@ -639,7 +691,9 @@ export default {
 <style scoped>
 
 .box-card{
+  position: relative;
   background: rgba(255,255,255,0.618);
+  padding-bottom: 50px;
   margin: 10% auto;
   max-width: 800px;
   min-width: 300px;
@@ -668,7 +722,7 @@ export default {
   width: 100%;
 }
 .schedule{
-  padding: 1%;
+  padding: 3%;
 }
 
 </style>

@@ -19,7 +19,8 @@ const router =  new Router({
         {
             path: '/schedule',
             component: schedule,
-        },{
+        },
+        {
             path: '*',
             redirect: '/login'
         }

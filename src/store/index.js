@@ -7,6 +7,7 @@ export default new Vuex.Store({
     state: {
         name: sessionStorage.getItem('name')||'',
         stuId: sessionStorage.getItem('stuId')||'',
+        count: sessionStorage.getItem('count')||0,
     },
     getters:{
 
@@ -20,6 +21,10 @@ export default new Vuex.Store({
             sessionStorage.setItem('stuId', stuId)
             state.stuId = stuId;
         },
+        setCount(state, count){
+            sessionStorage.setItem('count', count)
+            state.count = count;
+        }
     },
     actions:{
         updateName(context, name){
@@ -28,6 +33,9 @@ export default new Vuex.Store({
         updateStuId(context, stuId){
             context.commit('setStuId', stuId)
         },
+        updateCount(context, count){
+            context.commit('setCount', count)
+        }
     }
 })
 
