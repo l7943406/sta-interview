@@ -44,7 +44,7 @@
               <el-input
                   placeholder="请输入姓名"
                   prefix-icon="el-icon-user-solid"
-                  @keyup.enter.native='enter'
+                  @keyup.enter.native='doEnter'
                   v-model="loginForm.data.name">
               </el-input>
             </el-form-item>
@@ -67,6 +67,7 @@
                     :r="10"
                     :w="310"
                     :h="155"
+                    :imgs="img"
                     ref="refresh"
                     slider-text="向右滑动"
                     @success="onSuccess"
@@ -82,12 +83,16 @@
 export default {
   name: 'Login',
   mounted() {
+    for (let i = 0; i < 100; i++) {
+      this.img.push('http://chat-image.muchen7.cn/random/'+ Math.floor(Math.random()*99) +'.jpg')
+    }
     window.addEventListener('resize', () => {
       this.vis = document.body.clientWidth >= 992;
     })
   },
   data() {
     return {
+      img:[],
       verifyCallback: '',
       vis: true,
       loginForm: {
@@ -119,6 +124,7 @@ export default {
       if (typeof this.verifyCallback === 'function') {
         this.verifyCallback();
         this.verifyCallback = '';
+        this.$store.commit("setCount", 0);
         this.onRefresh()
       }
     },

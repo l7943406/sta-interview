@@ -236,6 +236,7 @@
                     :h="155"
                     ref="refresh"
                     slider-text="向右滑动"
+                    :imgs="img"
                     @success="onSuccess"
                     @fail="onFail"
                     @refresh="onRefresh"
@@ -250,7 +251,7 @@ export default {
   name: 'Schedule',
   data() {
     return {
-      img: ['https://picsum.photos/300/150'],
+      img: [],
       userInfoDialog: false,
       userInfo:'',
       verifyCallback: '',
@@ -351,6 +352,10 @@ export default {
     }
   },
   mounted() {
+    for (let i = 0; i < 100; i++) {
+      this.img.push('http://chat-image.muchen7.cn/random/'+ Math.floor(Math.random()*99) +'.jpg')
+    }
+
     this.registerForm.data.stuId = this.$store.state.stuId
     this.registerForm.data.name = this.$store.state.name
 
@@ -427,7 +432,6 @@ export default {
     },
     //验证码 通过父容器刷新
     onRefresh(){
-      this.img = ['https://picsum.photos/300/150/?time = ' + Date.now()]
       this.$refs.refresh.reset();
     },
     async doInit(){

@@ -26,24 +26,16 @@
 
 </style>
 <script>
-    document.addEventListener("touchmove", function (e) {
-        e.preventDefalut()
-    }, {
-        passive: false
-    });
-
-
-    var startX, startY;
+    let startX, startY;
     document.addEventListener("touchstart", function (e) {
-
         startX = e.targetTouches[0].pageX;
         startY = e.targetTouches[0].pageY;
     });
 
     document.addEventListener("touchmove", function (e) {
 
-        var moveX = e.targetTouches[0].pageX;
-        var moveY = e.targetTouches[0].pageY;
+        let moveX = e.targetTouches[0].pageX;
+        let moveY = e.targetTouches[0].pageY;
 
         if (Math.abs(moveX - startX) > Math.abs(moveY - startY)) {
             e.preventDefault();
