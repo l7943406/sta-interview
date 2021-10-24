@@ -83,6 +83,9 @@
 export default {
   name: 'Login',
   mounted() {
+    document.body.addEventListener('focusout',()=>{
+      window.scrollTo({top:0,left:0,behavior:"smooth"})
+    })
     this.vis = document.body.clientWidth >= 992;
     window.addEventListener('resize', () => {
       this.vis = document.body.clientWidth >= 992;

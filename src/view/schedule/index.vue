@@ -211,7 +211,7 @@
           </el-col>
           <!-- 右下角内容 -->
           <div style="right: 15px; bottom: 10px;position: absolute">
-            <el-link v-if="active > 0 && active < 3"
+            <el-link v-if="active > 0 && active < 3 && interviewResult1 !== 'error' && interviewResult2 !== 'error'"
                      :underline="false"
                      class="el-icon-user"
                      style="font-size: 18px;padding-bottom: 10px"
@@ -310,7 +310,7 @@ export default {
           ],
           phone: [
             {required: true, message: '请输入电话号码', trigger: 'blur'},
-            {pattern: "^1(3[0-9]|5[0-3,5-9]|7[1-3,5-8]|8[0-9])\\d{8}$", message: '请输入正确的电话号码!', trigger: 'blur'}
+            {pattern: "^1((3[0-9])|(4[5-7])|(4[0|9])|(5[0-3])|(5[5-9])|66|(7[5-8])|(7[2|3])|(8[0-9])|(9[5-9])|(9[1|3]))\\d{8}$", message: '请输入正确的电话号码!', trigger: 'blur'}
           ],
         }
       },
@@ -370,7 +370,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     for (let i = 0; i < 100; i++) {
       this.img.push('http://chat-image.muchen7.cn/random/'+ Math.floor(Math.random()*99) +'.jpg')
     }
@@ -378,12 +378,17 @@ export default {
     this.registerForm.data.stuId = this.$store.state.stuId
     this.registerForm.data.name = this.$store.state.name
 
-    if (this.registerForm.data.stuId === '' || this.registerForm.data.name === '') {
-      this.$router.push('/login')
+    if (this.$store.state.stuId === '' || this.$store.state.name === '') {
+      await this.$router.push('/login')
+      return;
     }
-    this.doInit()
+    await this.doInit()
   },
   methods: {
+    handleScroll() {
+      let scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0
+      window.scrollTo(0, Math.max(scrollHeight - 1, 0))
+    },
     //路由 login
     back(){
       this.$router.push('/login')
@@ -580,7 +585,6 @@ export default {
                 type: "error",
                 message: res.data.data['items']
               })
-              location.reload()
             }
           }).catch(() => {
             this.$message({
