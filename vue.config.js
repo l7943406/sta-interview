@@ -1,12 +1,11 @@
 const port = 8589; // dev port
 module.exports = {
     devServer: {
+        // contentBase: "./public",
+        static:true,
+
         port,
         open: true,
-        overlay: {
-            warnings: false,
-            errors: true
-        },
         proxy: {
             "/": {
                 target: "http://sta.muchen7.cn:11111/",
